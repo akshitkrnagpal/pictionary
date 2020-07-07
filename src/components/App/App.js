@@ -48,8 +48,6 @@ const Room = () => {
   }, [roomName]);
 
   const handleDraw = (lX, lY, cX, cY) => {
-    console.log('handleDraw');
-
     const participants = Object.keys(api._participants);
     const myId = api._myUserID;
 
@@ -76,12 +74,12 @@ const Room = () => {
   };
 
   return (
-    <div className='flex flex-col h-screen w-screen bg-conference'>
+    <div className='flex flex-col h-full w-full bg-conference'>
       <div className='flex-1 px-8 py-8'>
         <Canvas
           ref={canvas}
-          drawMiddleware={handleDraw}
           className='w-full h-full bg-white rounded'
+          onDraw={handleDraw}
         />
       </div>
       <div className='overflow-hidden' style={{ height: 175 }}>

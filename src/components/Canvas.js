@@ -8,7 +8,7 @@ import React, {
 
 let context = null;
 
-const Canvas = forwardRef(({ drawMiddleware, ...props }, ref) => {
+const Canvas = forwardRef(({ onDraw, ...props }, ref) => {
   const canvas = useRef(null);
 
   const [state, setState] = useState({});
@@ -105,7 +105,7 @@ const Canvas = forwardRef(({ drawMiddleware, ...props }, ref) => {
   };
 
   const draw = (lX, lY, cX, cY) => {
-    drawMiddleware(lX, lY, cX, cY);
+    onDraw(lX, lY, cX, cY);
     context.strokeStyle = '#000';
     context.lineWidth = 4;
     context.moveTo(lX, lY);
