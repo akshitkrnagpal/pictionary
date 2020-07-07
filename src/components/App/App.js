@@ -2,7 +2,7 @@ import { Router, useParams } from '@reach/router';
 import React, { useEffect, useRef } from 'react';
 import { DOMAIN } from '../../constants/config';
 
-import JitsiMeetExternalAPI from '../../external_api';
+import * as JitsiMeetExternalAPI from '../../external_api';
 
 const Room = () => {
   const container = useRef();
