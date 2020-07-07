@@ -2,37 +2,42 @@ import { Router, useParams } from '@reach/router';
 import React, { useEffect, useRef } from 'react';
 import { DOMAIN } from '../../constants/config';
 
-import * as JitsiMeetExternalAPI from '../../external_api';
-
 const Room = () => {
   const container = useRef();
   const { roomName } = useParams();
 
   useEffect(() => {
-    const api = new JitsiMeetExternalAPI(DOMAIN, {
-      parentNode: container.current,
-      roomName,
-      configOverwrite: {
-        startWithAudioMuted: true,
-        startWithVideoMuted: true,
-      },
-      interfaceConfigOverwrite: {
-        DEFAULT_LOGO_URL: '',
-        DISABLE_DOMINANT_SPEAKER_INDICATOR: true,
-        DISABLE_FOCUS_INDICATOR: true,
-        SHOW_JITSI_WATERMARK: false,
-        SHOW_WATERMARK_FOR_GUESTS: false,
-        TOOLBAR_ALWAYS_VISIBLE: true,
-        VERTICAL_FILMSTRIP: false,
-        filmStripOnly: true,
-        REMOTE_THUMBNAIL_RATIO: 16 / 9,
-        HIDE_INVITE_MORE_HEADER: true,
-      },
-    });
+    const init = async () => {
+      const module = await import('../../external_api');
+      const JitsiMeetExternalAPI =
+        module.default || window.JitsiMeetExternalAPI;
+      const api = new JitsiMeetExternalAPI(DOMAIN, {
+        parentNode: container.current,
+        roomName,
+        configOverwrite: {
+          startWithAudioMuted: true,
+          startWithVideoMuted: true,
+        },
+        interfaceConfigOverwrite: {
+          DEFAULT_LOGO_URL: '',
+          DISABLE_DOMINANT_SPEAKER_INDICATOR: true,
+          DISABLE_FOCUS_INDICATOR: true,
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_WATERMARK_FOR_GUESTS: false,
+          TOOLBAR_ALWAYS_VISIBLE: true,
+          VERTICAL_FILMSTRIP: false,
+          filmStripOnly: true,
+          REMOTE_THUMBNAIL_RATIO: 16 / 9,
+          HIDE_INVITE_MORE_HEADER: true,
+        },
+      });
 
-    api.on('videoConferenceJoined', console.log);
-    api.on('readyToClose', console.log);
-    api.on('suspendDetected', console.log);
+      api.on('videoConferenceJoined', console.log);
+      api.on('readyToClose', console.log);
+      api.on('suspendDetected', console.log);
+    };
+
+    init();
   }, [roomName]);
 
   return (
