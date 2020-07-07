@@ -1,9 +1,13 @@
 import { Router, useParams } from '@reach/router';
 import React, { useEffect, useRef } from 'react';
 import { DOMAIN } from '../../constants/config';
+import Canvas from '../Canvas';
+
+let api = null;
 
 const Room = () => {
   const container = useRef();
+  const canvas = useRef();
   const { roomName } = useParams();
 
   useEffect(() => {
@@ -11,12 +15,13 @@ const Room = () => {
       const module = await import('../../external_api');
       const JitsiMeetExternalAPI =
         module.default || window.JitsiMeetExternalAPI;
-      const api = new JitsiMeetExternalAPI(DOMAIN, {
+      api = new JitsiMeetExternalAPI(DOMAIN, {
         parentNode: container.current,
         roomName,
         configOverwrite: {
           startWithAudioMuted: true,
           startWithVideoMuted: true,
+          openBridgeChannel: 'datachannel',
         },
         interfaceConfigOverwrite: {
           DEFAULT_LOGO_URL: '',
@@ -35,15 +40,49 @@ const Room = () => {
       api.on('videoConferenceJoined', console.log);
       api.on('readyToClose', console.log);
       api.on('suspendDetected', console.log);
+
+      api.on('endpointTextMessageReceived', handleRecieveEvent);
     };
 
     init();
   }, [roomName]);
 
+  const handleDraw = (lX, lY, cX, cY) => {
+    console.log('handleDraw');
+
+    const participants = Object.keys(api._participants);
+    const myId = api._myUserID;
+
+    participants.forEach(participant => {
+      if (participant === myId) return;
+
+      api.executeCommand(
+        'sendEndpointTextMessage',
+        participant,
+        JSON.stringify({ lX, lY, cX, cY }),
+      );
+    });
+  };
+
+  const handleRecieveEvent = ({ data }) => {
+    if (
+      data &&
+      data.eventData &&
+      data.eventData.name === 'endpoint-text-message'
+    ) {
+      const { lX, lY, cX, cY } = JSON.parse(data.eventData.text);
+      canvas.current.draw(lX, lY, cX, cY);
+    }
+  };
+
   return (
     <div className='flex flex-col h-screen w-screen bg-conference'>
       <div className='flex-1 px-8 py-8'>
-        <canvas className='w-full h-full bg-white rounded'></canvas>
+        <Canvas
+          ref={canvas}
+          drawMiddleware={handleDraw}
+          className='w-full h-full bg-white rounded'
+        />
       </div>
       <div className='overflow-hidden' style={{ height: 175 }}>
         <div
