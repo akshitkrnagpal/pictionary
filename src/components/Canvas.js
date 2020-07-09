@@ -1,116 +1,133 @@
 import React, {
-  useEffect,
-  useState,
-  useRef,
   forwardRef,
   useImperativeHandle,
+  memo,
+  useRef,
+  useLayoutEffect,
+  useCallback,
 } from 'react';
+import resizeImageData from 'resize-image-data';
 
-let context = null;
+const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
+  const canvas = useRef();
 
-const Canvas = forwardRef(({ onDraw, ...props }, ref) => {
-  const canvas = useRef(null);
+  let context = null,
+    drawing = false,
+    lastX = null,
+    lastY = null;
 
-  const [state, setState] = useState({});
+  const init = useCallback(() => {
+    if (!canvas.current) return;
 
-  useEffect(() => {
-    if (canvas.current) {
-      context = canvas.current.getContext('2d');
-      canvas.current.width = canvas.current.offsetWidth;
-      canvas.current.height = canvas.current.offsetHeight;
+    context = canvas.current.getContext('2d'); // eslint-disable-line react-hooks/exhaustive-deps
 
-      setState(state => ({
-        ...state,
-        drawing: false,
-      }));
-    }
+    const image = context.getImageData(
+      0,
+      0,
+      context.canvas.width,
+      context.canvas.height,
+    );
+
+    context.canvas.width = context.canvas.offsetWidth;
+    context.canvas.height = context.canvas.offsetHeight;
+
+    const scaledImage = resizeImageData(
+      image,
+      context.canvas.width,
+      context.canvas.height,
+      'nearest-neighbor',
+    );
+
+    context.putImageData(scaledImage, 0, 0);
   }, [canvas]);
 
+  useLayoutEffect(init);
+
+  useLayoutEffect(() => {
+    window.addEventListener('resize', init);
+
+    return () => {
+      window.removeEventListener('resize', init);
+    };
+  }, [init]);
+
+  const stroke = (lastX, lastY, currentX, currentY) => {
+    context.strokeStyle = color;
+    context.lineWidth = width;
+    context.moveTo(lastX, lastY);
+    context.lineTo(currentX, currentY);
+    context.stroke();
+  };
+
   useImperativeHandle(ref, () => ({
-    draw(lX, lY, cX, cY) {
-      context.strokeStyle = '#000';
-      context.lineWidth = 4;
-      context.moveTo(lX, lY);
-      context.lineTo(cX, cY);
-      context.stroke();
+    draw: (lastX, lastY, currentX, currentY) => {
+      stroke(lastX, lastY, currentX, currentY);
     },
   }));
 
+  const draw = (lastX, lastY, currentX, currentY) => {
+    onDraw(lastX, lastY, currentX, currentY);
+    stroke(lastX, lastY, currentX, currentY);
+  };
+
   const handleOnTouchStart = e => {
     e.persist();
+
     const rect = canvas.current.getBoundingClientRect();
     context.beginPath();
-    setState(state => ({
-      ...state,
-      lastX: e.targetTouches[0].pageX - rect.left,
-      lastY: e.targetTouches[0].pageY - rect.top,
-      drawing: true,
-    }));
+
+    drawing = true;
+
+    lastX = e.targetTouches[0].pageX - rect.left;
+    lastY = e.targetTouches[0].pageY - rect.top;
   };
 
   const handleOnMouseDown = e => {
     e.persist();
+
     const rect = canvas.current.getBoundingClientRect();
     context.beginPath();
 
-    setState(state => ({
-      ...state,
-      lastX: e.clientX - rect.left,
-      lastY: e.clientY - rect.top,
-      drawing: true,
-    }));
+    drawing = true;
+
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
   };
 
   const handleOnTouchMove = e => {
     e.persist();
-    if (state.drawing) {
-      const rect = canvas.current.getBoundingClientRect();
-      const lastX = state.lastX;
-      const lastY = state.lastY;
-      let currentX = e.targetTouches[0].pageX - rect.left;
-      let currentY = e.targetTouches[0].pageY - rect.top;
-      draw(lastX, lastY, currentX, currentY);
-      setState(state => ({
-        ...state,
-        lastX: currentX,
-        lastY: currentY,
-      }));
-    }
+
+    if (!drawing) return;
+
+    const rect = canvas.current.getBoundingClientRect();
+
+    const currentX = e.targetTouches[0].pageX - rect.left;
+    const currentY = e.targetTouches[0].pageY - rect.top;
+
+    draw(lastX, lastY, currentX, currentY);
+
+    lastX = currentX;
+    lastY = currentY;
   };
 
   const handleOnMouseMove = e => {
     e.persist();
-    if (state.drawing) {
-      const rect = canvas.current.getBoundingClientRect();
-      const lastX = state.lastX;
-      const lastY = state.lastY;
 
-      let currentX = e.clientX - rect.left;
-      let currentY = e.clientY - rect.top;
+    if (!drawing) return;
 
-      draw(lastX, lastY, currentX, currentY);
-      setState(state => ({
-        ...state,
-        lastX: currentX,
-        lastY: currentY,
-      }));
-    }
+    const rect = canvas.current.getBoundingClientRect();
+
+    const currentX = e.clientX - rect.left;
+    const currentY = e.clientY - rect.top;
+
+    draw(lastX, lastY, currentX, currentY);
+
+    lastX = currentX;
+    lastY = currentY;
   };
 
   const handleOnMouseUp = e => {
-    setState(state => ({
-      ...state,
-      drawing: false,
-    }));
-  };
-
-  const draw = (lX, lY, cX, cY) => {
-    onDraw(lX, lY, cX, cY);
-    context.strokeStyle = '#000';
-    context.lineWidth = 4;
-    context.moveTo(lX, lY);
-    context.lineTo(cX, cY);
-    context.stroke();
+    drawing = false;
   };
 
   return (
@@ -127,4 +144,6 @@ const Canvas = forwardRef(({ onDraw, ...props }, ref) => {
   );
 });
 
-export default Canvas;
+export default memo(Canvas, (prevProps, nextProps) => {
+  return false;
+});

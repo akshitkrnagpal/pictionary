@@ -81,6 +81,8 @@ const Room = () => {
           ref={canvas}
           className='w-full h-full bg-white rounded'
           onDraw={handleDraw}
+          color='#000'
+          width={4}
         />
       </div>
       <div className='overflow-hidden' style={{ height: 175 }}>
