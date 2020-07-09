@@ -14,7 +14,8 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
   let context = null,
     drawing = false,
     lastX = null,
-    lastY = null;
+    lastY = null,
+    changeset = [];
 
   const init = useCallback(() => {
     if (!canvas.current) return;
@@ -63,11 +64,22 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
     draw: (lastX, lastY, currentX, currentY) => {
       stroke(lastX, lastY, currentX, currentY);
     },
+    put: changes => {
+      changes.forEach(change => {
+        const { lX, lY, cX, cY } = change;
+        stroke(lX, lY, cX, cY);
+        changeset.push(change);
+      });
+    },
+    get: () => {
+      return changeset;
+    },
   }));
 
   const draw = (lastX, lastY, currentX, currentY) => {
     onDraw(lastX, lastY, currentX, currentY);
     stroke(lastX, lastY, currentX, currentY);
+    changeset.push({ lX: lastX, lY: lastY, cX: currentX, cY: currentY });
   };
 
   const handleOnTouchStart = e => {

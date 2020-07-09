@@ -43,10 +43,25 @@ const Room = () => {
       api.on('suspendDetected', console.log);
 
       api.on('endpointTextMessageReceived', handleRecieveEvent);
+      api.on('participantJoined', handleParticipantJoined);
     };
 
     init();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomName]);
+
+  const handleParticipantJoined = ({ id }) => {
+    if (!api._myUserID) return;
+
+    // TODO find a better way.
+    setTimeout(() => {
+      sendEventData(id, {
+        type: 'put',
+        data: canvas.current.get(),
+      });
+    }, 5000);
+  };
 
   const handleDraw = (lX, lY, cX, cY) => {
     const participants = Object.keys(api._participants);
@@ -55,11 +70,10 @@ const Room = () => {
     participants.forEach(participant => {
       if (participant === myId) return;
 
-      api.executeCommand(
-        'sendEndpointTextMessage',
-        participant,
-        JSON.stringify({ lX, lY, cX, cY }),
-      );
+      sendEventData(participant, {
+        type: 'draw',
+        data: { lX, lY, cX, cY },
+      });
     });
   };
 
@@ -69,9 +83,24 @@ const Room = () => {
       data.eventData &&
       data.eventData.name === 'endpoint-text-message'
     ) {
-      const { lX, lY, cX, cY } = JSON.parse(data.eventData.text);
-      canvas.current.draw(lX, lY, cX, cY);
+      const event = JSON.parse(data.eventData.text);
+
+      switch (event.type) {
+        case 'draw':
+          const { lX, lY, cX, cY } = event.data;
+          canvas.current.draw(lX, lY, cX, cY);
+          break;
+        case 'put':
+          canvas.current.put(event.data);
+          break;
+        default:
+          console.warn('Received event that has no handler.');
+      }
     }
+  };
+
+  const sendEventData = (id, event) => {
+    api.executeCommand('sendEndpointTextMessage', id, JSON.stringify(event));
   };
 
   return (
