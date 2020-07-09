@@ -21,6 +21,7 @@ const Room = () => {
         configOverwrite: {
           startWithAudioMuted: true,
           startWithVideoMuted: true,
+          prejoinPageEnabled: false,
           openBridgeChannel: 'datachannel',
         },
         interfaceConfigOverwrite: {
