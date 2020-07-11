@@ -1,7 +1,7 @@
 import { Router, useParams } from '@reach/router';
 import React, { useEffect, useRef } from 'react';
-import { DOMAIN } from '../../constants/config';
-import Canvas from '../Canvas';
+import { DOMAIN } from '../constants/config';
+import Canvas from './Canvas';
 
 let api = null;
 
@@ -12,7 +12,7 @@ const Room = () => {
 
   useEffect(() => {
     const init = async () => {
-      const module = await import('../../external_api');
+      const module = await import('../external_api');
       const JitsiMeetExternalAPI =
         module.default || window.JitsiMeetExternalAPI;
       api = new JitsiMeetExternalAPI(DOMAIN, {

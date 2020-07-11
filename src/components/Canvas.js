@@ -1,12 +1,13 @@
 import React, {
-  forwardRef,
-  useImperativeHandle,
   memo,
   useRef,
-  useLayoutEffect,
+  forwardRef,
   useCallback,
+  useLayoutEffect,
+  useImperativeHandle,
 } from 'react';
 import resizeImageData from 'resize-image-data';
+import throttle from '../utils/throttle';
 
 const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
   const canvas = useRef();
@@ -147,8 +148,8 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
       ref={canvas}
       onMouseDown={handleOnMouseDown}
       onTouchStart={handleOnTouchStart}
-      onMouseMove={handleOnMouseMove}
-      onTouchMove={handleOnTouchMove}
+      onMouseMove={throttle(handleOnMouseMove, 10)}
+      onTouchMove={throttle(handleOnTouchMove, 10)}
       onMouseUp={handleOnMouseUp}
       onTouchEnd={handleOnMouseUp}
       {...props}
