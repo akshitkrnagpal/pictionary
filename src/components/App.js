@@ -36,6 +36,7 @@ const Room = () => {
           filmStripOnly: true,
           REMOTE_THUMBNAIL_RATIO: 16 / 9,
           HIDE_INVITE_MORE_HEADER: true,
+          MOBILE_APP_PROMO: false,
         },
       });
 
