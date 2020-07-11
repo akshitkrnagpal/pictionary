@@ -12,7 +12,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "resize-image-data": "^0.3.0"
+    "resize-image-data": "^0.3.0",
+    "uuid": "^8.2.0"
   },
   "scripts": {
     "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",

@@ -1,5 +1,6 @@
-import { Router, useParams } from '@reach/router';
+import { Router, useParams, Redirect } from '@reach/router';
 import React, { useEffect, useRef } from 'react';
+import { v4 as uuid } from 'uuid';
 import { DOMAIN } from '../constants/config';
 import Canvas from './Canvas';
 
@@ -124,10 +125,14 @@ const Room = () => {
   );
 };
 
-const App = () => (
-  <Router>
-    <Room path=':roomName' />
-  </Router>
-);
+const App = () => {
+  const id = uuid();
+  return (
+    <Router>
+      <Room path=':roomName' />
+      <Redirect noThrow from='*' to={id} />
+    </Router>
+  );
+};
 
 export default App;
