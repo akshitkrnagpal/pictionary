@@ -4,6 +4,10 @@ body,
   height: 100%;
 }
 
+body {
+  overscroll-behavior-y: contain;
+}
+
 #root > div {
   height: 100%;
 }
