@@ -24,6 +24,7 @@ const Room = () => {
           startWithVideoMuted: true,
           prejoinPageEnabled: false,
           openBridgeChannel: 'datachannel',
+          enableNoisyMicDetection: false,
         },
         interfaceConfigOverwrite: {
           DEFAULT_LOGO_URL: '',
