@@ -107,10 +107,10 @@ const Room = () => {
 
   return (
     <div className='flex flex-col h-full w-full bg-conference'>
-      <div className='flex-1 px-8 py-8'>
+      <div className='flex-1 px-8 py-8 flex justify-center items-center'>
         <Canvas
           ref={canvas}
-          className='w-full h-full bg-white rounded'
+          className='bg-white rounded'
           onDraw={handleDraw}
           color='#000'
           width={4}

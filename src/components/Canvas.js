@@ -9,6 +9,9 @@ import React, {
 import resizeImageData from 'resize-image-data';
 import throttle from '../utils/throttle';
 
+const WIDTH = 800;
+const HEIGHT = 450;
+
 const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
   const canvas = useRef();
 
@@ -146,6 +149,8 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
   return (
     <canvas
       ref={canvas}
+      width={WIDTH}
+      height={HEIGHT}
       onMouseDown={handleOnMouseDown}
       onTouchStart={handleOnTouchStart}
       onMouseMove={throttle(handleOnMouseMove, 10)}
