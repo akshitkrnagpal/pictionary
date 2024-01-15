@@ -30,7 +30,7 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
       0,
       0,
       context.canvas.width,
-      context.canvas.height,
+      context.canvas.height
     );
 
     context.canvas.width = context.canvas.offsetWidth;
@@ -40,7 +40,7 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
       image,
       context.canvas.width,
       context.canvas.height,
-      'nearest-neighbor',
+      'nearest-neighbor'
     );
 
     context.putImageData(scaledImage, 0, 0);
@@ -68,8 +68,8 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
     draw: (lastX, lastY, currentX, currentY) => {
       stroke(lastX, lastY, currentX, currentY);
     },
-    put: changes => {
-      changes.forEach(change => {
+    put: (changes) => {
+      changes.forEach((change) => {
         const { lX, lY, cX, cY } = change;
         stroke(lX, lY, cX, cY);
         changeset.push(change);
@@ -86,7 +86,7 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
     changeset.push({ lX: lastX, lY: lastY, cX: currentX, cY: currentY });
   };
 
-  const handleOnTouchStart = e => {
+  const handleOnTouchStart = (e) => {
     e.persist();
 
     const rect = canvas.current.getBoundingClientRect();
@@ -98,7 +98,7 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
     lastY = e.targetTouches[0].pageY - rect.top;
   };
 
-  const handleOnMouseDown = e => {
+  const handleOnMouseDown = (e) => {
     e.persist();
 
     const rect = canvas.current.getBoundingClientRect();
@@ -110,7 +110,7 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
     lastY = e.clientY - rect.top;
   };
 
-  const handleOnTouchMove = e => {
+  const handleOnTouchMove = (e) => {
     e.persist();
 
     if (!drawing) return;
@@ -126,7 +126,7 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
     lastY = currentY;
   };
 
-  const handleOnMouseMove = e => {
+  const handleOnMouseMove = (e) => {
     e.persist();
 
     if (!drawing) return;
@@ -142,7 +142,7 @@ const Canvas = forwardRef(({ onDraw, color, width, ...props }, ref) => {
     lastY = currentY;
   };
 
-  const handleOnMouseUp = e => {
+  const handleOnMouseUp = (e) => {
     drawing = false;
   };
 

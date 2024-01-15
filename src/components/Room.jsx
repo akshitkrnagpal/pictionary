@@ -1,15 +1,14 @@
-import { Router, useParams, Redirect } from '@reach/router';
 import React, { useEffect, useRef } from 'react';
-import { v4 as uuid } from 'uuid';
 import { DOMAIN } from '../constants/config';
 import Canvas from './Canvas';
+import { roomRoute } from '../routes';
 
 let api = null;
 
 const Room = () => {
   const container = useRef();
   const canvas = useRef();
-  const { roomName } = useParams();
+  const { roomName } = roomRoute.useParams();
 
   useEffect(() => {
     const init = async () => {
@@ -70,7 +69,7 @@ const Room = () => {
     const participants = Object.keys(api._participants);
     const myId = api._myUserID;
 
-    participants.forEach(participant => {
+    participants.forEach((participant) => {
       if (participant === myId) return;
 
       sendEventData(participant, {
@@ -127,14 +126,4 @@ const Room = () => {
   );
 };
 
-const App = () => {
-  const id = uuid();
-  return (
-    <Router>
-      <Room path=':roomName' />
-      <Redirect noThrow from='*' to={id} />
-    </Router>
-  );
-};
-
-export default App;
+export default Room;
