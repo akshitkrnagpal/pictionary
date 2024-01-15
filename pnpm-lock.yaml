@@ -11,6 +11,9 @@ dependencies:
   '@tanstack/router-devtools':
     specifier: ^1.4.6
     version: 1.4.6(react-dom@18.2.0)(react@18.2.0)
+  p-throttle:
+    specifier: ^6.1.0
+    version: 6.1.0
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -1685,6 +1688,11 @@ packages:
     dependencies:
       p-limit: 3.1.0
     dev: true
+
+  /p-throttle@6.1.0:
+    resolution: {integrity: sha512-eQMdGTxk2+047La67wefUtt0tEHh7D+C8Jl7QXoFCuIiNYeQ9zWs2AZiJdIAs72rSXZ06t11me2bgalRNdy3SQ==}
+    engines: {node: '>=18'}
+    dev: false
 
   /parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
