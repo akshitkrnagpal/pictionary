@@ -3,6 +3,7 @@ import Canvas, { CanvasHandle, Change } from './Canvas';
 import { roomRoute } from '../routes';
 import { useSocket } from '@/hooks/useSocket';
 import { Card } from '@/components/ui/card';
+import Users from '@/components/Users';
 
 const Room = () => {
   const canvas = useRef<CanvasHandle>(null);
@@ -48,20 +49,22 @@ const Room = () => {
   }, [isConnected, roomName, socket]);
 
   return (
-    <div className='grid grid-cols-2 h-full w-full bg-zinc-100'>
-      <div className='flex-1 px-8 py-8 flex justify-center flex-col'>
-        <div className='text-sm'>
-          {isConnected ? 'Connected' : 'Not Connected'}
+    <div className='min-h-full w-full bg-zinc-100 py-8'>
+      <div className='grid container grid-cols-[242px_1fr] gap-4'>
+        <div className='flex'>
+          <Users />
         </div>
-        <Card>
-          <Canvas
-            key={isConnected.toString()}
-            ref={canvas}
-            onDraw={handleDraw}
-            color='#000'
-            width={4}
-          />
-        </Card>
+        <div className='flex'>
+          <Card className='w-full'>
+            <Canvas
+              key={isConnected.toString()}
+              ref={canvas}
+              onDraw={handleDraw}
+              color='#000'
+              width={4}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );
