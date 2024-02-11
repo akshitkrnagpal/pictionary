@@ -1,4 +1,6 @@
-export const setupListeners = (io) => {
+import type { Server } from 'socket.io';
+
+export const setupListeners = (io: Server) => {
   io.on('connection', (socket) => {
     console.log('Socket connected:', socket.id);
 
