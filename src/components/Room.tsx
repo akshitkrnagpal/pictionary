@@ -13,21 +13,9 @@ const Room = () => {
     socket.emit('join', { roomName });
   }, [isConnected, roomName, socket]);
 
-  // const handleJoin = () => {
-  //   sendEventData({
-  //     type: 'put',
-  //     data: canvas.current.get(),
-  //   });
-  // };
-
   const handleDraw = (lX: number, lY: number, cX: number, cY: number) => {
     socket.emit('draw', { roomName, change: { lX, lY, cX, cY } });
   };
-
-  // const onJoin = (event: unknown) => {
-  //   if (!canvas.current) return;
-  //   canvas.current.put(event.data);
-  // };
 
   const onDraw = (event: Change) => {
     if (!canvas.current) return;
@@ -36,11 +24,24 @@ const Room = () => {
   };
 
   useEffect(() => {
-    // socket.on('join', onJoin);
+    const onRequestState = () => {
+      if (!canvas.current) return;
+      const state = canvas.current.get();
+      socket.emit('state', { roomName, state });
+    };
+
+    const onReceiveState = (state: Change[]) => {
+      if (!canvas.current) return;
+      canvas.current.put(state);
+    };
+
+    socket.on('request-state', onRequestState);
+    socket.on('receive-state', onReceiveState);
     socket.on('draw', onDraw);
 
     return () => {
-      // socket.off('join', onJoin);
+      socket.off('request-state', onRequestState);
+      socket.off('receive-state', onReceiveState);
       socket.off('draw', onDraw);
     };
   }, [isConnected, roomName, socket]);
