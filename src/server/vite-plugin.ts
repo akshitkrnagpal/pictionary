@@ -10,4 +10,10 @@ export const socketIO: () => Plugin = () => ({
     const io = new Server(server.httpServer);
     setupListeners(io);
   },
+  configurePreviewServer(server) {
+    if (!server.httpServer) return;
+
+    const io = new Server(server.httpServer);
+    setupListeners(io);
+  },
 });
