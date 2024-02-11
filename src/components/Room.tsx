@@ -50,6 +50,7 @@ const Room = () => {
       <div className='flex-1 px-8 py-8 flex justify-center items-center flex-col'>
         <div>{isConnected ? 'Connected' : 'Not Connected'}</div>
         <Canvas
+          key={isConnected.toString()}
           ref={canvas}
           className='bg-white rounded border'
           onDraw={handleDraw}
