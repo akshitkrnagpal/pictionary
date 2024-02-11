@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import Canvas, { CanvasHandle, Change } from './Canvas';
 import { roomRoute } from '../routes';
 import { useSocket } from '@/hooks/useSocket';
+import { Card } from '@/components/ui/card';
 
 const Room = () => {
   const canvas = useRef<CanvasHandle>(null);
@@ -47,17 +48,20 @@ const Room = () => {
   }, [isConnected, roomName, socket]);
 
   return (
-    <div className='grid grid-cols-2 bg-gray-400 h-full w-full'>
-      <div className='flex-1 px-8 py-8 flex justify-center items-center flex-col'>
-        <div>{isConnected ? 'Connected' : 'Not Connected'}</div>
-        <Canvas
-          key={isConnected.toString()}
-          ref={canvas}
-          className='bg-white rounded border'
-          onDraw={handleDraw}
-          color='#000'
-          width={4}
-        />
+    <div className='grid grid-cols-2 h-full w-full bg-zinc-100'>
+      <div className='flex-1 px-8 py-8 flex justify-center flex-col'>
+        <div className='text-sm'>
+          {isConnected ? 'Connected' : 'Not Connected'}
+        </div>
+        <Card>
+          <Canvas
+            key={isConnected.toString()}
+            ref={canvas}
+            onDraw={handleDraw}
+            color='#000'
+            width={4}
+          />
+        </Card>
       </div>
     </div>
   );

@@ -10,15 +10,24 @@
     "preview": "vite preview --port 3000 --host"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
+    "@radix-ui/react-slot": "^1.0.2",
     "@tanstack/react-router": "^1.4.6",
     "@tanstack/router-devtools": "^1.4.6",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "houseform": "^1.12.0",
+    "lucide-react": "^0.323.0",
     "p-throttle": "^6.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "resize-image-data": "^0.3.1",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
-    "vite-tsconfig-paths": "^4.3.1"
+    "tailwind-merge": "^2.2.1",
+    "tailwindcss-animate": "^1.0.7",
+    "vite-tsconfig-paths": "^4.3.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
