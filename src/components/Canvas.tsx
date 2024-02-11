@@ -14,34 +14,34 @@ import { throttle } from '../utils/throttle';
 const WIDTH = 800;
 const HEIGHT = 450;
 
-type Change = {
+export type Change = {
   lX: number;
   lY: number;
   cX: number;
   cY: number;
 };
 
-const Canvas = forwardRef(
-  (
-    {
-      onDraw,
-      color,
-      width,
-      ...props
-    }: {
-      onDraw: {
-        (
-          lastX: number,
-          lastY: number,
-          currentX: number,
-          currentY: number
-        ): void;
-      };
-      color: string;
-      width: number;
-    },
-    ref
-  ) => {
+export type CanvasHandle = {
+  draw: (
+    lastX: number,
+    lastY: number,
+    currentX: number,
+    currentY: number
+  ) => void;
+  put: (changes: Change[]) => void;
+  get: () => Change[];
+};
+
+type CanvasProps = {
+  onDraw: {
+    (lastX: number, lastY: number, currentX: number, currentY: number): void;
+  };
+  color: string;
+  width: number;
+} & React.HTMLAttributes<HTMLCanvasElement>;
+
+const Canvas = forwardRef<CanvasHandle, CanvasProps>(
+  ({ onDraw, color, width, ...props }: CanvasProps, ref) => {
     const canvas = useRef<HTMLCanvasElement>(null);
 
     let context: CanvasRenderingContext2D | null = null,

@@ -7,5 +7,15 @@ export const setupListeners = (io: Server) => {
     socket.on('disconnect', () => {
       console.log('Socket disconnected:', socket.id);
     });
+
+    socket.on('join', ({ roomName }) => {
+      socket.join(roomName);
+      console.log('Socket joined room:', roomName);
+    });
+
+    socket.on('draw', (data) => {
+      console.log('Socket emitted draw:', data);
+      socket.to(data.roomName).emit('draw', data.change);
+    });
   });
 };
